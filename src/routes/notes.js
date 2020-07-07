@@ -28,8 +28,32 @@ router.post('/notes/new-note', async (req, res) => {
 }
 });
 
-router.get('/notes', (req, res) => {
-	res.send('Notes from database');
+router.get('/notes', async (req, res) => {
+await Note.find().sort({date: 'desc'})
+.then(data => {
+	const notesDb = {
+		notes: data.map(note => {
+			return {
+				title: note.title,
+				description: note.description,
+				_id: note._id
+			}
+		})
+	}
+	res.render('notes/all-notes', { notes: notesDb.notes });
+});
+});
+
+router.get('/notes/edit/:id', async (req, res) => {
+	const note = await Note.findById(req.params.id)
+	.then(data => {
+		return {
+			title: data.title,
+			description: data.description,
+			_id: data._id
+		}
+	})
+	res.render('notes/edit-note', {note});
 });
 
 module.exports = router;
