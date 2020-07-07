@@ -25,7 +25,7 @@ router.post('/notes/new-note', async (req, res) => {
 	const newNote = new Note({ title, description });
 	await newNote.save();
 	req.flash('success_msg', 'Note Added Successfully');
-	res.redirect('/notes');
+	res.redirect('/notes'); 
 }
 });
 
