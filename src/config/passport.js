@@ -10,11 +10,21 @@ passport.use(new LocalStrategy({
 	if(!user) {
 		return done(null, false, { message: 'Not User found.' });
 	} else {
-		const match = await User.matchPassword(password);
+		const match = await user.matchPassword(password);
 		if(match) {
 			return done(null, user);
 		} else {
 			return done(null, false, {message: 'Incorrect Password'});
 		}
 	}
-}))
+}));
+
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+	User.findById(id, (err, user) => {
+		done(err, user);
+	});
+});
